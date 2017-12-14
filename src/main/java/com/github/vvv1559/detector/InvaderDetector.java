@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class InvaderDetector {
+    private static final int MATCH_DETECTION_PERCENT = 90;
+
     private final Set<Invader> invaders;
 
     public InvaderDetector() {
@@ -69,16 +71,21 @@ public class InvaderDetector {
             return false;
         }
 
+        int checkedPoints = 0;
+        int matchesPoints = 0;
         for (int rowIndex = 0; rowIndex < pattern.height(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < pattern.width(); columnIndex++) {
                 char patternSymbol = pattern.getRowAt(rowIndex).getDataAt(columnIndex);
                 char imageSymbol = image.getRowAt(rowIndex).getDataAt(columnIndex);
 
-                if (patternSymbol == ImageReader.POINT_SYMBOL && patternSymbol != imageSymbol) {
-                    return false;
+                if (patternSymbol == ImageReader.POINT_SYMBOL) {
+                    checkedPoints++;
+                    if (imageSymbol == patternSymbol) {
+                        matchesPoints++;
+                    }
                 }
             }
         }
-        return true;
+        return matchesPoints >= checkedPoints * MATCH_DETECTION_PERCENT / 100;
     }
 }

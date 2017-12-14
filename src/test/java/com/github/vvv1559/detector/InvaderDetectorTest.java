@@ -16,8 +16,9 @@ import java.util.stream.Collectors;
 public class InvaderDetectorTest {
     @Test
     public void testDetectInvadersOnMap() throws Exception {
-        Assert.assertFalse(getDetectionResult("test-map").imageHasInvaders());
-        Assert.assertFalse(getDetectionResult("map-looks-like-with-invaders").imageHasInvaders());
+        Assert.assertTrue(getDetectionResult("test-map").imageHasInvaders());
+        Assert.assertTrue(getDetectionResult("map-with-invaders-and-noise").imageHasInvaders());
+        Assert.assertFalse(getDetectionResult("map-without-invaders").imageHasInvaders());
 
         DetectionResult positiveDetection = getDetectionResult("map-with-invaders");
         SelectionRange firstDetection = new SelectionRange(1, 0, 11, 8);
@@ -41,10 +42,6 @@ public class InvaderDetectorTest {
     }
 
     @Test
-    public void te() throws Exception {
-    }
-
-    @Test
     public void imageMatchesPattern() throws Exception {
         Image image = new Image();
         image.addRow("ooo");
@@ -65,11 +62,21 @@ public class InvaderDetectorTest {
     }
 
     @Test
-    public void imageNotMatchesPattern() throws Exception {
+    public void imageWithNegativeNoiseMatchesPattern() throws Exception {
         Image image = new Image();
         image.addRow("o-o");
         image.addRow("-o-");
         image.addRow("ooo");
+
+        Assert.assertTrue(InvaderDetector.imageMatchesPattern(image, getPattern()));
+    }
+
+    @Test
+    public void imageNotMatchesPattern() throws Exception {
+        Image image = new Image();
+        image.addRow("o--");
+        image.addRow("-o-");
+        image.addRow("-oo");
 
         Assert.assertFalse(InvaderDetector.imageMatchesPattern(image, getPattern()));
     }
